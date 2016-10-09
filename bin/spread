@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'spread'
+Spread.test(ARGV[0])
