@@ -1,4 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'spread'
-Spread.test(ARGV[0])
+
+filepath = ARGV[0]
+if filepath == nil
+  puts "Please specify a path to a correctly formatted CSV file!"
+else
+  Spread.calc(filepath)
+end
