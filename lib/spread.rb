@@ -3,16 +3,36 @@ require_relative "spread/bond"
 
 require "csv"
 
-CORPORATE = "corporate"
-GOVERNMENT = "government"
-
+# Bond spread-to-benchmark and spread-to-curve calculator.
 module Spread
+  # Corporate bond issue type identifier.
+  CORPORATE = "corporate"
+  # Government bond issue type identifier.
+  GOVERNMENT = "government"
+
+  # Parses the given CSV file and runs calculation procedures to determine the
+  # spread to benchmark and spread to curve of the given bonds.
+  #
+  # @param csv_file [String] Path to a properly formatted CSV file of bond information.
+  # @return [void]
   def self.calc(csv_file)
     corporate_bonds, government_bonds = parse_csv(csv_file)
     spread_to_benchmark(corporate_bonds, government_bonds)
     spread_to_curve(corporate_bonds, government_bonds)
   end
 
+  # Parses the given CSV file and splits bonds into two arrays, one for
+  # corporate issues and one for government issues. This function will fail
+  # with an exception if the given path does not point to a valid and properly
+  # formatted CSV file. Input CSV file is assumed to be in the following format:
+  #
+  # bond,type,term,yield<br>
+  # C1,corporate,1.3 years,3.30%<br>
+  # G1,government,0.9 years,1.70%<br>
+  # G2,government,2.3 years,2.30%
+  #
+  # @param csv_file [String] Path to a properly formatted CSV file of bond information.
+  # @return [[Array<Bond>, Array<Bond>]] A tuple of parsed Bond arrays separated by issue type in the format [corporate_bonds, government_bonds].
   def self.parse_csv(csv_file)
     corporate_bonds = Array.new
     government_bonds = Array.new
@@ -36,6 +56,19 @@ module Spread
     return corporate_bonds, government_bonds
   end
 
+  # Takes an array of corporate and an array of government bonds, finds the
+  # appropriate government benchmark bond for each corporate bond, and then
+  # calculates the yield spreads from the corporate bonds to their
+  # corresponding benchmark government bonds. This function writes comma-
+  # separated values to stdout, with a newline at the end, in the following
+  # format:
+  #
+  # bond,benchmark,spread_to_yield<br>
+  # C1,G1,1.60%
+  #
+  # @param corporate_bonds [Array<Bond>] an array of Bond objects with "corporate" issue types.
+  # @param government_bonds [Array<Bond>] an array of Bond objects with "government" issue types.
+  # @return [void]
   def self.spread_to_benchmark(corporate_bonds, government_bonds)
     puts "bond,benchmark,spread_to_benchmark"
 
@@ -63,6 +96,36 @@ module Spread
     puts ""
   end
 
+  # Takes an array of corporate and an array of government bonds and calculates,
+  # using linear interpolation, the spread to curve for each corporate bond.
+  # This function writes comma-separated values to stdout, with a newline at the
+  # end, in the following format:
+  #
+  # bond,spread_to_curve<br>
+  # C1,1.22%<br>
+  # C2,2.98%
+  #
+  # From http://www.blueleafsoftware.com/Products/Dagra/LinearInterpolationExcel.php,
+  # the formula for linear interpolation is as follows:
+  #
+  # y = y1 + (x - x1) * ((y2 - y1) / (x2 - x1))
+  #
+  # Where
+  #
+  # x1 = term in years of the lower-bound benchmark government bond.<br>
+  # y1 = yield in percentage of the lower-bound benchmark government bond.<br>
+  # x2 = term in years of the higher-bound benchmark government bond.<br>
+  # y2 = yield in percentage of the higher-bound benchmark government bond.<br>
+  # x = term in years of the corporate bond whose spread-to-curve is being calculated.<br>
+  # y = yield in percentage on the curve between benchmark government bonds at the term of the corporate bond.
+  #
+  # And the formula for spread-to-curve is as follows:
+  #
+  # spread_to_curve = corporate_bond_yield - y
+  #
+  # @param corporate_bonds [Array<Bond>] an array of Bond objects with "corporate" issue types.
+  # @param government_bonds [Array<Bond>] an array of Bond objects with "government" issue types.
+  # @return [void]
   def self.spread_to_curve(corporate_bonds, government_bonds)
     puts "bond,spread_to_curve"
 
