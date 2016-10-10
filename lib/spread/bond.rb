@@ -22,7 +22,11 @@ module Spread
     def initialize(name, issue, term_years, yield_percent)
       @name = name
       @issue = issue
+      # This may fail without rescue or return an unknown value if term_years is
+      # not a String in the format "13.2 years".
       @term_years = term_years.split[0].to_f
+      # This may fail without rescue or return an unknown value if yield_percent
+      # is not a String in the format "3.30%".
       @yield_percent = yield_percent.delete(PERCENT).to_f
     end
   end

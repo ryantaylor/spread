@@ -37,7 +37,14 @@ module Spread
     corporate_bonds = Array.new
     government_bonds = Array.new
 
+    # This will raise a (currently un-rescued) exception if csv_file does not
+    # point to a valid CSV file.
     input = CSV.read(csv_file)
+
+    # We shift the iterator one place to skip over the header row in the CSV
+    # file. This could be changed to check if the header is as expected, but
+    # because I'm already assuming valid input and failing outright otherwise I
+    # didn't bother.
     input.shift
 
     input.each do |row|
@@ -50,6 +57,9 @@ module Spread
       end
     end
 
+    # This sorting is important because the spread_to_curve function assumes
+    # that these arrays are ordered by term, with shorter terms at the beginning
+    # and longer terms at the end.
     corporate_bonds.sort! { |a,b| a.term_years <=> b.term_years }
     government_bonds.sort! { |a,b| a.term_years <=> b.term_years }
 
@@ -73,14 +83,19 @@ module Spread
     puts "bond,benchmark,spread_to_benchmark"
 
     corporate_bonds.each do |corp_bond|
-      first = true
-      bench_spread = 0.0
+      bench_spread = nil
       benchmark = nil
+
+      # This block iterates through each of the government bonds and finds the
+      # bond with the smallest term spread to use as the benchmark. Because the
+      # government_bonds array was sorted when loaded from CSV, this loop could
+      # be short-circuited for increased performance. However, I couldn't find a
+      # clean way to do it, and decided that readability was more important than
+      # a negligible performance improvement in this situation.
       government_bonds.each do |gov_bond|
-        if first
+        if bench_spread == nil
           bench_spread = (corp_bond.term_years - gov_bond.term_years).abs
           benchmark = gov_bond
-          first = false
         else
           term_spread = (corp_bond.term_years - gov_bond.term_years).abs
           if term_spread < bench_spread
@@ -132,6 +147,20 @@ module Spread
     corporate_bonds.each do |corp_bond|
       upper_bench = nil
       lower_bench = nil
+
+      # This block assumes that for every corporate bond in the given input,
+      # there exists a government bond with a term less than or equal to the
+      # corporate bond's term. It also assumes that there exists a government
+      # bond with a term greater than the corporate bond's term. I added edge
+      # case handling for a government bond with the same term as the corporate
+      # bond, but I haven't used Ruby enough to know how it handles float
+      # comparison, and because it wasn't part of the requirements I didn't
+      # investigate further.
+      #
+      # Note that this block assumes the government_bonds array is sorted by
+      # ascending terms. This allows me to assume that lower_bench will always
+      # be populated before upper_bench, which means I can short-circuit the
+      # loop once I find my upper_bench bond.
       government_bonds.each do |gov_bond|
         if corp_bond.term_years == gov_bond.term_years
           lower_bench = gov_bond
@@ -147,10 +176,12 @@ module Spread
       if lower_bench.term_years == corp_bond.term_years
         spread_to_curve = corp_bond.yield_percent - lower_bench.yield_percent
       else
+        # This is the equation for linear interpolation as described above.
         yield_on_curve = lower_bench.yield_percent + 
                          (corp_bond.term_years - lower_bench.term_years) *
                          ((upper_bench.yield_percent - lower_bench.yield_percent) /
                           (upper_bench.term_years - lower_bench.term_years))
+        # This is the equation for spread-to-curve as described above.
         spread_to_curve = corp_bond.yield_percent - yield_on_curve
       end
 
