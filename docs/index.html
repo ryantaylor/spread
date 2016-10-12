@@ -99,6 +99,15 @@ CSV file and prints comma-separated output to stdout.</p>
 years | 5.30% | | G1 | government | 9.4 years | 3.70% | | G2 | government |
 12 years | 4.80% |</p>
 
+<p>This input will generate the following output:</p>
+
+<pre class="code ruby"><code class="ruby">$ spread input2.csv
+bond,benchmark,spread_to_benchmark
+C1,G1,1.6%
+
+bond,spread_to_curve
+C1,1.22%</code></pre>
+
 <h2 id="label-Development">Development</h2>
 
 <p>After checking out the repo, run <code>bin/setup</code> to install
@@ -165,7 +174,7 @@ href="http://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Tue Oct 11 22:54:04 2016 by
+  Generated on Tue Oct 11 22:57:06 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.5 (ruby-2.3.1).
 </div>

@@ -38,6 +38,19 @@ The input CSV file is expected to be formatted as follows:
 | G1     | government | 9.4 years   | 3.70% |
 | G2     | government | 12 years    | 4.80% |
 
+This input will generate the following output:
+
+```
+$ spread sample_input.csv
+bond,benchmark,spread_to_benchmark
+C1,G1,1.6%
+
+bond,spread_to_curve
+C1,1.22%
+
+
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
