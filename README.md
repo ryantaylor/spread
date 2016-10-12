@@ -48,7 +48,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 This is my first experience with Ruby, so it's possible I may have sacrificed some best practices in order keep my time spent on the challenge at a reasonable level. However, I did my best to adhere to Ruby conventions as I understand them.
 
-This is a very barebones application. Aside from the CSV library from Ruby's stdlib I didn't use any external code in the actual application. In order to ease development and provide some project structure, I used [Bundler](http://bundler.io/) to construct and manage the project. I chose [Minitest](https://github.com/seattlerb/minitest) as my testing framework and I use [Rake](https://github.com/ruby/rake) to build the project and run tests.
+This is a very barebones application. Aside from the CSV library from Ruby's stdlib I didn't use any external code in the actual application. In order to ease development and provide some project structure, I used [Bundler](http://bundler.io/) to construct and manage the project. I chose [Minitest](https://github.com/seattlerb/minitest) as my testing framework and I use [Rake](https://github.com/ruby/rake) to build the project and run tests. Documentation was generated with [YARD](http://yardoc.org/).
 
 Because I had to learn Ruby on top of actually writing the application, I had to make some tradeoffs, sacrificing robust functionality in the name of simplicity. If I had more time to refine and iterate, I would make the following changes:
 
