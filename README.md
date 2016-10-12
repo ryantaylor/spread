@@ -70,7 +70,7 @@ Because I had to learn Ruby on top of actually writing the application, I had to
 * Accept input straight from stdin instead of forcing the user to pass a file.
 * Give the user more options for output. Split the two calculation functionalities into separate commands so they can be used independently.
 * Separate the project into descrete library and application components for easier maintenance and greater usability. This includes updating the module structure to adhere to best practices.
-* Separate calculations and equations into separate functions in the code in order to make unit testing easier, and find an alternative to using hard-coded puts commands for output. This is probably the biggest change in the context of this challenge because it would have made proper test coverage a whole lot easier.
+* Separate calculations and equations into separate functions in the code in order to make unit testing easier, and find an alternative to using hard-coded puts commands for output. This is probably the biggest change in the context of this challenge because it would have made proper test coverage a whole lot easier. It also would make using the library and consuming the output programmatically far easier.
 
 ## License
 
