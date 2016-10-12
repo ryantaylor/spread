@@ -62,16 +62,20 @@
       <div id="content"><div id='filecontents'>
 <h1 id="label-Spread">Spread</h1>
 
-<p>Welcome to your new gem! In this directory, you&#39;ll find the files you
-need to be able to package up your Ruby library into a gem. Put your Ruby
-code in the file <code>lib/spread</code>. To experiment with that code, run
-<code>bin/console</code> for an interactive prompt.</p>
+<p>Spread is a simple command line application to calculate the
+spread-to-benchmark and spread-to-curve of various corporate bonds and
+their government bond benchmarks.</p>
 
-<p>TODO: Delete this and the text above, and describe your gem</p>
+<p><a href="https://ryantaylor.github.io/spread/">Documentation</a></p>
 
 <h2 id="label-Installation">Installation</h2>
 
-<p>Add this line to your application&#39;s Gemfile:</p>
+<pre class="code ruby"><code class="ruby">$ git clone https://github.com/ryantaylor/spread.git
+$ cd spread
+$ gem install spread</code></pre>
+
+<p>If you want to use as a library, add this line to your application&#39;s
+Gemfile:</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>spread</span><span class='tstring_end'>&#39;</span></span>
 </code></pre>
@@ -80,13 +84,20 @@ code in the file <code>lib/spread</code>. To experiment with that code, run
 
 <pre class="code ruby"><code class="ruby">$ bundle</code></pre>
 
-<p>Or install it yourself as:</p>
-
-<pre class="code ruby"><code class="ruby">$ gem install spread</code></pre>
-
 <h2 id="label-Usage">Usage</h2>
 
-<p>TODO: Write usage instructions here</p>
+<p>The current state of the application is very simple. It accepts a path to a
+CSV file and prints comma-separated output to stdout.</p>
+
+<pre class="code ruby"><code class="ruby">$ spread sample_input.csv</code></pre>
+
+<p>The input CSV file is expected to be formatted as follows:</p>
+
+<h3 id="label-Sample+input">Sample input</h3>
+
+<p>| bond | type | term | yield | |——–|————|————-|——-| | C1 | corporate | 10.3
+years | 5.30% | | G1 | government | 9.4 years | 3.70% | | G2 | government |
+12 years | 4.80% |</p>
 
 <h2 id="label-Development">Development</h2>
 
@@ -102,10 +113,49 @@ release</code>, which will create a git tag for the version, push git
 commits and tags, and push the <code>.gem</code> file to <a
 href="https://rubygems.org">rubygems.org</a>.</p>
 
-<h2 id="label-Contributing">Contributing</h2>
+<h2 id="label-Tech+-26+Tradeoffs">Tech &amp; Tradeoffs</h2>
 
-<p>Bug reports and pull requests are welcome on GitHub at <a
-href="https://github.com/[USERNAME]/spread">github.com/[USERNAME]/spread</a>.</p>
+<p>This is my first experience with Ruby, so it&#39;s possible I may have
+sacrificed some best practices in order keep my time spent on the challenge
+at a reasonable level. However, I did my best to adhere to Ruby conventions
+as I understand them.</p>
+
+<p>This is a very barebones application. Aside from the CSV library from
+Ruby&#39;s stdlib I didn&#39;t use any external code in the actual
+application. In order to ease development and provide some project
+structure, I used <a href="http://bundler.io/">Bundler</a> to construct and
+manage the project. I chose <a
+href="https://github.com/seattlerb/minitest">Minitest</a> as my testing
+framework and I use <a href="https://github.com/ruby/rake">Rake</a> to
+build the project and run tests.</p>
+
+<p>Because I had to learn Ruby on top of actually writing the application, I
+had to make some tradeoffs, sacrificing robust functionality in the name of
+simplicity. If I had more time to refine and iterate, I would make the
+following changes:</p>
+<ul><li>
+<p>Add a proper command line interface.</p>
+</li><li>
+<p>Fail gracefully on invalid input. I couldn&#39;t find a definitive source
+on how to properly handle exceptions in Ruby so I just let them throw
+without rescuing right now.</p>
+</li><li>
+<p>Accept input straight from stdin instead of forcing the user to pass a
+file.</p>
+</li><li>
+<p>Give the user more options for output. Split the two calculation
+functionalities into separate commands so they can be used independently.</p>
+</li><li>
+<p>Separate the project into descrete library and application components for
+easier maintenance and greater usability. This includes updating the module
+structure to adhere to best practices.</p>
+</li><li>
+<p>Separate calculations and equations into separate functions in the code in
+order to make unit testing easier, and find an alternative to using
+hard-coded puts commands for output. This is probably the biggest change in
+the context of this challenge because it would have made proper test
+coverage a whole lot easier.</p>
+</li></ul>
 
 <h2 id="label-License">License</h2>
 
@@ -114,7 +164,7 @@ href="http://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Mon Oct 10 12:37:59 2016 by
+  Generated on Tue Oct 11 22:52:51 2016 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.5 (ruby-2.3.1).
 </div>
